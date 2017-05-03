@@ -1,5 +1,6 @@
 (function(){
-    angular.module("JobCard",['ui.router', 'ui.bootstrap', 'ngFileUpload', 'chart.js','angularUtils.directives.dirPagination','shoppinpal.mobile-menu'])
+    angular.module("JobCard",['ui.router', 'ui.bootstrap', 'ngFileUpload', 'chart.js','angularUtils.directives.dirPagination','shoppinpal.mobile-menu',
+                             'angularModalService'])
                  .config(function($stateProvider, $urlRouterProvider){
                   $urlRouterProvider.otherwise('/');
                   $stateProvider.state('login', {
@@ -37,7 +38,8 @@
                   }).state('dashboard.jobmanagement', {
                       url: '/dashboard.jobmanagement',
                       templateUrl: 'jobcard/jobmanagement/job-mag.html',
-                      controller: 'jobmanagement'
+                      controller: 'jobmanagement',
+                      controllerAs: 'vm'
                   }).state('dashboard.applydash', {
                       url: '/dashboard.applydash',
                       templateUrl: 'jobcard/applydash/apply-dash.html',

@@ -1,4 +1,4 @@
-
+<div ng-show="!cards">
 <form name="cvform" role="form">
     <h3 class="text-center">job creation form</h3>
     <table class="table table-bordered">
@@ -48,6 +48,15 @@
         </td></tr>
 </table>
 </form>
+</div>
+<div ng-show="cards">
+    
+    <div  class="alert alert-success block" role="alert">
+        <h3 class="text-center">you successfully created your job post</h3>
+       <p class="text-center"><a class="link" ui-sref="dashboard.jobview">click to view job dashboard</a></p>
+    </div>
+
+</div>
     
 
 

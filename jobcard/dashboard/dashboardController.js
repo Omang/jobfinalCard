@@ -57,6 +57,7 @@
     }]).controller('dashboard', ['$scope','$location','$interpolate','$stateParams','dashboard','$state',  function($scope, $location,$interpolate, $stateParams, dashboard, $state){
         $scope.loggedIn = true;
         if(localStorage['User-Data'] !== undefined){
+            $scope.testing = false;
          var con = '';
         var payload = $stateParams.a;
             $scope.b = payload;
@@ -73,7 +74,7 @@
             checkimge(userid);
             checkcv(userid);
             checkjob(userid);
-            
+            $scope.wellcomedash = true;
          function checkjob(userid){
              var requestjob = {
                userid: userid  
@@ -108,11 +109,13 @@
             };
             dashboard.getprofile(request, function(result){
                 var bio = result.data.bio;
-                if(bio){
+                if(bio !== null && bio !== undefined){
                     console.log(bio);
+                $scope.morebio = true;
                    $scope.data = false; 
                     $scope.profileimg = result.data.profileImg;
                 }else{
+                $scope.morebio = false;
                 $scope.data = true;
                 }
             });
@@ -158,11 +161,14 @@
                 if(results.data !== undefined){
                     
                 console.log(results.data);
+                    $location.path('/dashboard');
+                   $state.reload();
                 }
             });
             
         }
         $scope.cvcreate = function(){
+             $scope.wellcomedash = false;
             var request = {
                 userid: userid,
                 firstname: $scope.cv.fname,
@@ -187,6 +193,7 @@
         $scope.tojob = function(){
             
             $location.path('/dashboard.jobmanagement');
+             $scope.wellcomedash = false;
         }
         
         $scope.createjob = function(){
@@ -204,7 +211,7 @@
                if(items){
                    $location.path('/dashboard');
                    $state.reload(); 
-                   
+                   $scope.wellcomedash = false;
                }
             });
         }
@@ -222,13 +229,5 @@
         }else{
             $location.path('/');
         }
-    }]).directive('likeItems', function(){
-        return {
-            restrict: 'A',
-            scope: {
-                ngModel: '^ngModel'
-            }
-               
-        };
-    });
+    }]);
 }())

@@ -165,8 +165,6 @@ module.exports.cvReview = function(req, res){
                         userdata.save(function(err, user){
                             if(err){
                                 res.error(err).status(500);
-                            }else{
-                                res.json(user);
                             }
                         });
                     }

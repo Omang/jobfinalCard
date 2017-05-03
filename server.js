@@ -5,16 +5,23 @@ var multipart = require('connect-multiparty');
 var multipartyMiddleware = multipart();
 var jwt = require('jsonwebtoken');
 var jwtexpresss = require('express-jwt');
-
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
 var secureRoutes = express.Router();
 
+//var localauth = require('./server/controllers/passport-local-Controller');
+
 var registeruser = require('./server/controllers/register-Controller');
+
+
 var loginuser = require('./server/controllers/login-Controller');
+
+
 var dashboard = require('./server/controllers/dashboard-Controller');
 
 var cv = require('./server/controllers/cv-Controller');
 var job = require('./server/controllers/job-Controller');
-
+var Users = require('./server/datasets/users');
 var app = express();
 
 
@@ -26,6 +33,40 @@ app.use('/jobcard', express.static(__dirname + "/jobcard"));
 app.use('/node_modules', express.static(__dirname + "/node_modules"));
 app.use('/bower_components', express.static(__dirname + "/bower_components"));
 app.use('/uploads', express.static(__dirname + "/uploads"));
+app.use(passport.initialize());
+passport.use(new LocalStrategy(function(username, password, done){
+    
+     Users.findOne({username: username}).exec(function(err, user){
+           if(err){
+               return done(err);
+           }else{
+              if(user !== null){
+                 var salt = user.salt;
+                 var hash = user.hash;
+                 var verifypass = crypto.pbkdf2Sync(password, salt, 1000, 64).toString('hex');
+                  if(verifypass === hash){
+                    var user = jwt.sign({
+                      userid: user._id,
+                      username: user.username,
+                      email: user.email,
+                      }, "My_stuff");
+                      //res.json(token);
+                      return done(user);
+                      
+                  }else{
+                      //res.json({ msg: 'wrong password'});
+                      return done({ msg: 'wrong password'});
+                  }
+                  
+              }else{
+               //console.log('user not found');
+              // res.json({msg: 'user not found'});
+                return done({msg: 'user not found'});
+            }
+           }
+        });
+    
+}));
 app.use('/secure-api', secureRoutes);
 secureRoutes.use(function(req, res, next){
     console.log(req.body);
@@ -49,8 +90,30 @@ app.get('/', function(req, res){
     res.sendfile('index.html');
 });
 
+app.post('/api/login/login', function(req, res){
+    passport.authenticate('local', function(err, user, info){
+        if(err){
+            res.status(500);
+            res.error(err);
+            console.log(err);
+        }
+        if(!user){
+            res.status(500);
+            res.json(info);
+            console.log(info);
+        }
+        if(user){
+            res.status(200);
+            res.json(user);
+            console.log(user);
+        }
+    });
+} );
+         
+         
+
 app.post('/api/register/register', registeruser.registerUser);
-app.post('/api/login/login', loginuser.loginUser);
+//app.post('/api/login/login', loginuser.loginUser);
 app.post('/api/add/usercard', loginuser.addCard);
 app.post('/api/jobox/checkbox', loginuser.joBox);
 app.post('/api/dash/updates', loginuser.getdash);

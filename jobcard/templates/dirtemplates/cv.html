@@ -1,6 +1,9 @@
 <div>
-<div ng-show="cvshow">
-        <dt>Firstname:</dt>
+    <div ng-show="cvshow" class="card-deck">
+  <div class="card">
+    <div class="card-block">
+      <p class="card-text text-left">
+          <dt>Firstname:</dt>
         <dd>{{cvdata.firstName}}</dd>
         <dt>Lastname:</dt>
         <dd>{{cvdata.lastName}}</dd>
@@ -16,7 +19,13 @@
         <dd>{{cvdata.skilldes}}</dd>
         <dt>Experince:</dt>
         <dd>{{cvdata.expedes}}</dd>
-    <button class="btn btn-default btn-block" ng-click="editprofile()"><span class="glyphicon glyphicon-edit"></span>edit profile</button> 
+        </p>
+    </div>
+    <div class="card-footer">
+      <small class="text-muted">Last updated 3 mins ago</small>
+      <button class="btn btn-default btn-block" ng-click="editprofile()"><span class="glyphicon glyphicon-edit"></span>edit your resume</button>
+    </div>
+  </div>
 </div>
 
 <div ng-show="!cvshow">

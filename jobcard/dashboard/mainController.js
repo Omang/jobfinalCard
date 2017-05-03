@@ -1,7 +1,32 @@
 (function(){
-    angular.module("JobCard").filter("cards", function(){
-        
-        
+    angular.module("JobCard").filter("cards", cards).service('mainTask', mainTask)
+        .controller('main', main).directive('addJob', addJob)
+        .directive('allCv', allCv).directive('allJob', allJob)
+        .directive('loading', loadIcon);
+    loadIcon.$inject = ['$http'];
+    function loadIcon($http){
+        var directive = {
+            restrict : 'E',
+            replace: true,
+            templateUrl: 'jobcard/templates/dirtemplates/loadingicon.html',
+            transclude : true,
+            link : link
+        }
+        return directive;
+        function link(scope, attrs, element){
+        //  scope.isloading = function(){
+             // return $http.pendingRequest.length > 0;
+       //   }
+          scope.$watch('loading', function(value){
+              if(value){
+                scope.loadingStatus = true;
+              }else{
+                scope.loadingStatus = false;
+              }
+          });
+        }
+    }
+     function cards(){
         return function(jobcards){
           var loc = $scope.cvitems.district;
             for( var i = 0; i<jobcards.length; i++){
@@ -13,9 +38,15 @@
             }
         };
         
-    }).service('mainTask', ['$http', function($http){
+    }
+    
+    
+    mainTask.$inject = ['$http'];
+    
+     function mainTask($http){
         
         this.Cvone = function(request, callback){
+            
             $http.post('api/get/cv', request).then(function(response){
                 return callback(response);
             }).catch(function(error){
@@ -71,13 +102,18 @@
             }).catch();
         }
         
-    }]).controller('main', ['$interval','$scope','$stateParams','mainTask', function($interval, $scope, $stateParams, mainTask){
+    }
+    
+    
+    main.$inject  = ['$interval', '$scope', 'mainTask'];
+    
+     function main($interval, $scope, mainTask){
         if(localStorage['User-Data'] !== undefined){
             var user = JSON.parse(localStorage['User-Data']);
             var user_id = user.userid;
             $scope.userid = user_id;
             
-            console.log(user_id);
+            console.log(user);
             yourCv(user_id);
             rundash(true, user_id);
             Jobcard();
@@ -86,21 +122,23 @@
                 var request = {
                   userid: userid
                 };
+                $scope.loadingStatus = true;
                mainTask.Cvone(request, function(results){
                    var cvs = results.data;
                    $scope.cvdata = cvs;
-                  // console.log($scope.cvitems);
+                   console.log(cvs);
+                   $scope.loadingStatus = false;
                }); 
             }
             
             
          function Jobcard(){
-                
+         $scope.loadingStatus = true;  
           $scope.alljobs =  mainTask.jobCard(function(result){
               if(result){
                   $scope.alljobs = result;
                  console.log($scope.alljobs);
-                  
+                 $scope.loadingStatus = false; 
               }
               
           });
@@ -139,7 +177,9 @@
             
         }
         
-    }]).directive('addJob', function(){
+    }
+    
+    function addJob(){
         return {
           restrict: 'A',
           
@@ -149,7 +189,9 @@
             replace: true,
             templateUrl: 'jobcard/templates/dirtemplates/job.html'
         };
-    }).directive('allCv', function(){
+    }
+    
+    function allCv(){
         return {
           restrict: 'A',
         scope: {
@@ -168,7 +210,10 @@
         };
         
         
-    }).directive('allJob', ['mainTask',function(service){
+    }
+    allJob.$inject = ['mainTask'];
+    
+    function allJob(service){
         return{
           restrict: 'A',
           scope: {
@@ -192,12 +237,15 @@
                         var jobview = results.data.cardviews;
                         for(var i=0; i<jobview.length; i++){
                             if(jobview[i].cardview == userid){
-                                 scope.noresults = false;
+                                console.log(jobview);
+                                 scope.noresults = true;
                             }else{
-                              scope.noresults = true;  
+                              scope.noresults = false;  
                             }
-                        }
                     }
+                        
+                    }
+                       
                 }); 
                     
                 });
@@ -209,7 +257,7 @@
             };
             scope.$watch(request, function(){
                 service.Boxlike(request, function(results){
-                    console.log(results);
+                    //console.log(results);
                     if(results.data !== undefined){
                         var likesv = results.data.likeusers;
                         //console.log(likesv);
@@ -274,5 +322,6 @@
         }
     }
         };
-    }]);
+    }
+    
 }())

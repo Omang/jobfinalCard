@@ -1,10 +1,9 @@
 <div class="col-md-6 col-sm-6 col-xs-12">
-    <h3 class="text-center" ng-model="job_id"><span class="glyphicon glyphicon-folder-open"></span> dropped CVs</h3>
-    <br>
+    <h3 class="text-center" ng-model="job_id"><span class="glyphicon glyphicon-folder-open"></span> dropped resumes</h3>
     
-   <div dir-paginate="applys in stuffout | itemsPerPage:3">
+   <div dir-paginate="applys in vm.stuffout | itemsPerPage:3">
        
-    <div show-card applycard="applys" jobid="job_id" ></div>
+    <div show-card applycard="applys" jobid="vm.job_id" ></div>
     
  </div>
     <dir-pagination-controls
@@ -13,13 +12,22 @@
     boundary-links="true" >
     </dir-pagination-controls>
 </div>
-<div class="col-md-6 col-sm-6 col=xs-12">
-    <br>
-    <h3 class="text-center"><span class="glyphicon glyphicon-briefcase"></span></h3>
-   
-    <div dir-paginate="items in stuffin | itemsPerPage:3">
+<div class="col-md-6 col-sm-6 col=xs-12"> 
+    <div class="card text-center">
+  <div class="card-header">
+    <ul class="nav nav-tabs card-header-tabs">
+      <li class="nav-item">
+        <a class="nav-link active" href="#"><span class="glyphicon glyphicon-briefcase"></span>selected resumes</a>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link" href="#"><span class="glyphicon glyphicon-phone"></span>interview clients</a>
+      </li>
+    </ul>
+  </div>
+  <div class="card-block">
+        <div dir-paginate="items in vm.stuffin | itemsPerPage:3">
        
-     <div cv-review cvs="items" jobid="job_id" ></div>
+     <div cv-review cvs="items" jobid="vm.job_id" ></div>
     
  </div>
     <dir-pagination-controls
@@ -27,4 +35,7 @@
     direction-links="true"
     boundary-links="true" >
     </dir-pagination-controls>
+    
+  </div>
+</div>   
 </div>

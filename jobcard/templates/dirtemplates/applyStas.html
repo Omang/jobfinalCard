@@ -1,1 +1,13 @@
-<h3>applications results</h3>
+<div>
+<div ng-repeat="cards in ap.appcards">
+    <div ng-show="ap.replycard" class="alert alert-success">
+       <strong>job:</strong> {{cards.title}}
+        <strong>{{ap.replysms}}</strong>
+    </div>
+    <div ng-show="!ap.replycard" class="alert alert-warning">
+       <strong>job:</strong> {{cards.title}}
+        <strong>{{ap.replysms}}</strong>
+    </div>
+    </div>
+
+</div>

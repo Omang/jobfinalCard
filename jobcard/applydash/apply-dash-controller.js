@@ -1,6 +1,11 @@
 (function(){
-    angular.module("JobCard").service('apply', ['$http','$q', function($http, $q){
-        var deferred = $q.defer();
+    angular.module("JobCard").service('apply', apply)
+        .controller('applydash',applydash)
+        .directive('applyDash', applyDash).directive('applyRes', applyRes);
+    
+    apply.$inject = ['$http'];
+    
+     function apply($http){
         this.getuser = function(request, callback){
             $http.post('api/getuser/data', request).then(function(response){
                 if(response.data !== undefined){
@@ -39,10 +44,10 @@
             }).catch(function(error){
                 return callback(error);
             });
-        }
-        
-        
-    }]).controller('applydash',['$timeout','$q','$scope','apply', function($timeout, $q, $scope, apply){
+        }      
+    }
+    applydash.$inject = ['$timeout', '$scope', 'apply'];
+     function applydash($timeout, $scope, apply){
         
         if(localStorage['User-Data'] !== undefined){
             var user = JSON.parse(localStorage['User-Data']);
@@ -67,7 +72,9 @@
     
             }
         }
-            ]).directive('applyDash', ['apply', function(service){
+    applyDash.$inject = ['apply'];
+    
+     function applyDash(service){
         return {
             restrict: 'A',
                scope: {
@@ -145,13 +152,72 @@
                 }
             }
         };
-    }]).directive('applyRes', function(){
-        return {
-            restrict: 'E',
+    }
+    
+    function applyRes(){
+        var directive = {
+            restrict: 'A',
+            scope : {
+                userid : '='
+            },
+            controller : controller,
+            controllerAs : 'ap',
+            bindToController: true,
+            transclude : true,
             templateUrl: 'jobcard/templates/dirtemplates/applyStas.html',
-            link: function(scope, element, attrs){
-                
-            }
-        };
-    });
+            link: link
+        }
+        return directive;
+        function link(scope, element, attrs){
+           console.log(scope.ap.userid);
+            scope.ap.appRes(scope.ap.userid);
+        }
+        controller.$inject = ['$scope', 'apply'];
+        function controller($scope, apply){
+           var ap = this;
+           ap.appRes = function(userid){
+               var request = {
+                 userid : userid  
+               };
+               apply.getuser(request, function(results){
+                   if(results){
+                       var adds = results.addedcards;
+                      ap.appcards = adds;
+                       console.log(adds);
+                       for(var i = 0; i < adds.length; i++){
+                          var replydata = adds[i].reply; 
+                           var datad = replydata;
+                           if(datad){
+                             for(var j = 0; j < datad.length; j++){
+                               if(datad[i].replyok == "on the second step"){
+                                  ap.replycard = true;
+                                  ap.appcards = adds; 
+                                  ap.replysms = "on to the next step";
+                               }else{
+                                   ap.replycard = false;
+                                   ap.appcards = adds;
+                                   ap.replysms = "still on the queue"; 
+                               }
+                            }  
+                           }
+                           // for(var j = 0; j < datad.length; j++){
+                            //    console.log(datad[j]);
+                           // }
+                           //
+                            // console.log("on to the next step");
+                               //
+                           
+                               ap.replycard = false;
+                               ap.appcards = adds;
+                               ap.replysms = "still on the queue";
+                              // console.log("still on the queue");
+                           
+                          }
+                       }
+               });
+           }
+            
+        }
+    }
+    
 }())

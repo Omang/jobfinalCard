@@ -20,9 +20,24 @@
             </td>
         </tr>
         <tr>
+            <td><h4 class="text-center">Or</h4><a class="btn btn-block btn-social btn-twitter">
+    <span class="fa fa-twitter"></span> Sign in with Twitter
+  </a>
+                <a class="btn btn-block btn-social btn-facebook">
+    <span class="fa fa-facebook"></span> Sign in with Facebook
+  </a>
+                <a class="btn btn-block btn-social btn-google">
+    <span class="fa fa-google"></span> Sign in with Google
+  </a>
+            </td>
+        </tr>
+        <tr>
             <td><strong><a ui-sref="register">create an account</a></strong>
+                <i style="font-color: red;"><a ui-sref="register">forgot password?</a></i>
+                <div ng-show="ermess" class="alert alert-danger form-control">wrong details</div>
             </td>
         </tr>
     </table>
     </form>
+    <spinner name="mySpinner" show="loading"></spinner>
 </div>

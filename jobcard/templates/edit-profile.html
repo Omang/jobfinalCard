@@ -1,10 +1,11 @@
+<div ng-show="!morebio">
 <form name="profile" role="form">
 <table class="table table-bordered">
     <thead><h3 class="text-center">profile edition zone</h3></thead>
     <tr>
         <td><div class="btn btn-warning form-control" required name="file" ngf-select ng-model="file" name="file"  ngf-pattern="'image/*'"
     ngf-accept="'image/*'" ngf-max-size="20MB" ngf-min-height="100"
-    ngf-resize="{width: 100, height: 100}"><h5>select profile picture</h5></div>
+    ngf-resize="{width: 100, height: 100}"><h5>select profile picture or business logo</h5></div>
         </td>
     </tr>
     <tr>
@@ -20,3 +21,10 @@
     </tr>
 </table>
 </form>
+</div>
+<div ng-show="morebio">
+   <div class="alert alert-success block" role="alert">
+        <h3 class="text-center">you successfully completed your profile form</h3>
+       <p class="text-center"><a class="link" ui-sref="dashboard">click to go back to dashboard</a></p>
+    </div>
+</div>

@@ -1,6 +1,11 @@
 (function(){
+    'use strict';
     angular.module("JobCard")
-        .service('jobMan', ['$http', function($http){
+        .service('jobMan', jobMan).controller('jobmanagement', jobmanagement)
+        .directive('showCard', showCard).directive('cvReview', cvReview);
+    jobMan.$inject = ['$http'];
+    
+    function jobMan ($http){
             this.getjob = function(request, callback){
                 $http.post('api/getjobs/getjobs', request).then(function(response){
                     console.log('getting there');
@@ -21,14 +26,23 @@
                     return callback(response);
                 }).catch(function(error){
                     return callback(error);
+                   // console.log(error);
                 });
             }
-        }]).controller('jobmanagement', ['$scope','$interval', 'jobMan', function($scope,$interval, jobMan){
+       
+        
+        
+    }
+    
+    
+    jobmanagement.$inject = ['$scope', 'jobMan'];
+   
+     function jobmanagement ($scope, jobMan){
              if(localStorage['User-Data'] !== undefined){
             var user = JSON.parse(localStorage['User-Data']);
-            $scope.dirdata = {};
             var user_id = user.userid;
-            $scope.userid = user_id;
+            var vm = this;
+            vm.userid = user_id;
                  jobget(user_id);
                  function jobget(user_id){
                      var request ={
@@ -40,24 +54,27 @@
                      if(results.data !== null || results.data !== undefined){
                          var card = results.data;
                          for(var i = 0; i < card.length; i++){
-                             $scope.job_id = card[i]._id;
+                            vm.job_id = card[i]._id;
                              var boxcv = card[i].cvbox;
                              if(boxcv){
-                                $scope.stuffout = boxcv; 
+                                vm.stuffout = boxcv; 
                                  for(var i = 0; i < boxcv.length; i++){
                                      console.log(boxcv[i].review);
                                      var cvforr = boxcv[i].review;
-                                     if(cvforr){
-                                         for(var i = 0; i < cvforr.length; i++){
-                                        
-                                         $scope.stuffin = boxcv;
-                                         
-                                         }
+                                     if(cvforr != undefined){
+                                     for(var j = 0; j < cvforr.length; j++){
+                                          if(cvforr[j].jobid){
+                                            vm.stuffin = boxcv;
+                                            console.log(vm.stuffin);
+                                            
+                                          }
                                      }
+                                     }
+                                     
                                  }
-                                $scope.dropcvlength = boxcv.length;
+                                vm.dropcvlength = boxcv.length;
                              }else{
-                                 $scope.dropnull = false;
+                                 vm.dropnull = false;
                              }
                          }
                      }
@@ -66,78 +83,128 @@
                
                  
              }
-        }]).directive('showCard', ['jobMan',function(service){
-        return{
-            restrict: 'A',
-            scope : {
-            applycard : '=',
-            jobid : '=',
-            dirdata : '='
-        },transclude: true,
-            replace : true,
-            templateUrl: 'jobcard/templates/dirtemplates/applications.html',
-            link: function(scope, element, attrs){
-                var job_id = scope.jobid;
-                var cvowner = scope.applycard.userid;
-                checkreview(job_id, cvowner);
-                function checkreview(job_id, cvowner){
+        
+    }
+    
+    function showCard (){
+             var directive = {
+               restrict : 'A',
+                 scope : {
+                     applycard : '=',
+                     jobid: '=',
+                 },
+               link: link,
+               controller : controller,
+               controllerAs : 'vd',
+               bindToController : true,
+               transclude: true,
+               replace : true,
+               templateUrl: 'jobcard/templates/dirtemplates/applications.html'
+             };
+        return directive;
+        
+            function link(scope, element, attrs, ctrl){ 
+                //scope.vd.savedcv = false;
+                var job_id = scope.vd.jobid;
+            var cvowner = scope.vd.userid;
+           scope.vd.checkreview(job_id, cvowner);
+                var savebtn = angular.element("#lateR");
+                var viewbtn = angular.element("#viewmore");
+                savebtn.on('click', function(event){
+                    scope.vd.cvSave();
+                });
+            scope.viewmore = function(cvowner){
+                scope.vd.viewcv(cvowner);
+            }
+        }
+         controller.$inject = ['$scope', 'jobMan', '$uibModal'];  
+        function controller($scope, jobMan, $uibModal){
+            var vd = this;
+            vd.viewcv = function(cv){
+                console.log("view more just been clicked");
+               // vd.cvman = cvowner;
+                $uibModal.open({
+                    templateUrl: 'jobcard/templates/dirtemplates/viewmore.html',
+                    controller: function($scope, $uibModalInstance){
+                        $scope.cvname = cv.fname;
+                        $scope.cvlname = cv.lname;
+                        $scope.cvgender = cv.gender;
+                        $scope.cvexp =  cv.experince;
+                        $scope.cvskill = cv.skill;
+                        $scope.closeview = function(event){
+                            $uibModalInstance.close('cancel');
+                        }
+                    }
+                });
+            }
+            vd.checkreview = function(job_id, cvowner){
                     var request = {
                       jobid : job_id  
                     };
-                    service.reviewCheck(request, function(results){
-                        if(results !== null || results !== undefined){
+                        jobMan.reviewCheck(request, function(results){
+                        //console.log(results.data.cvbox);
+                        if(results.data.cvbox !== null || results.data.cvbox !== undefined){
                             var cvdata = results.data.cvbox;
-                            //console.log(results.data.cvbox);
+                           console.log(cvdata);
+                             //var data = [];
                             for(var i = 0; i < cvdata.length; i++){
-                                if(cvowner == cvdata[i].userid){
-                                    if(cvdata[i].review){
-                                        var review = cvdata[i].review;
-                                        for(var i =0; i < review.length; i++){
-                                            var con = review[i].jobid;
-                                            
-                                       scope.savedcv = true;
-                                       //scope.dirdata = cvdata;
-                                       console.log(cvdata);
-                                            
-                                        }
-                                       scope.$emit("cvdata", cvdata); 
-                                    }
-                                }
+                                if(cvdata[i].review){
+                                   //  vd.savedcv = true;
+                                   
+                                    var reviewdata = cvdata[i].review;
+                                    //for(var j = 0; j < reviewdata.length; j++){
+                                       // console.log(reviewdata.length);
+                                    vd.reviewlength = reviewdata.length;
+                                       // console.log(reviewlength);
+                                    var itemNum = parseInt(reviewlength);
+                                     console.log(itemNum);
+                                        //if(itemNum){
+                                           // console.log(reviewdata[j].reviewone);
+                                           vd.savedcv = true;  
+                                        //}else{
+                                       // vd.savedcv = false;
+                                   // }
+                                    
+                                //}
+                               // vd.savedcv = false;
                             }
+                        }
                         }
                     });
                 }
-                scope.cvSave = function(){
-                 //console.log("shit have just been clicked");
+            vd.cvSave = function(){
+                 console.log("shit have just been clicked");
                  var request = {
-                     cvdata : scope.applycard.userid,
-                     job_id : scope.jobid
+                     cvdata : vd.applycard.userid,
+                     job_id : vd.jobid
                  }
                  console.log(request);
-                 service.cvreview(request, function(results){
+                 jobMan.cvreview(request, function(results){
                      //console.log(results);
-                     scope.savedcv = true;
+                     vd.savedcv = true;
                  });
                 }
-                
-            }
+       
         }
-    }]).directive('cvReview', ['jobMan',function(service){
-        return {
-            restrict : 'A',
-            //require : 'showCard',
-            scope : {
-                cvs : '=',
-                jobid : '='
-            },
-            transclude : true,
+    }
+    function cvReview(){
+        var directive = {
+          restrict : 'A',
+          scope : {
+              cvs : '=',
+              jobid : '='
+          },transclude : true,
             replace : true,
             templateUrl: 'jobcard/templates/dirtemplates/cvnxtstep.html',
-            link : function(scope, element, attrs){
-                 
-               
-            }
+            link : link
+         
+        };
+        return directive; 
+        
+        function link(scope, element, attrs){
             
         }
-    }]);
+        
+    }
+    
 }())
