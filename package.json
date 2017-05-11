@@ -1,6 +1,9 @@
 {
-  "name": "TimeSucks",
+  "name": "jobCard",
   "version": "0.0.1",
+ "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "angular": "^1.5.8",
     "angular-chart.js": "^1.1.1",
