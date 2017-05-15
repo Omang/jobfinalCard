@@ -26,7 +26,7 @@ var cv = require('./server/controllers/cv-Controller');
 var job = require('./server/controllers/job-Controller');
 var Users = require('./server/datasets/users');
 var app = express();
-app.use(favicon(path.join(__dirname , 'favicon' , 'favicon.ico')));
+app.use(favicon(path.join(__dirname , 'uploads' , 'favicon.ico')));
 //mongoose.connect('mongodb://omang:214919117.omang@jobcard-shard-00-00-ib73t.mongodb.net:27017,jobcard-shard-00-01-ib73t.mongodb.net:27017,jobcard-shard-00-02-ib73t.mongodb.net:27017/weblab?ssl=true&replicaSet=jobcard-shard-0&authSource=admin');
 mongoose.connect('mongodb://jobUser:214919117omang@ds137291.mlab.com:37291/jobcard');
 
