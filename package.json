@@ -31,6 +31,6 @@
     "path": "^0.12.7",
     "socket.io": "^1.7.2",
     "youtube-audio-stream": "0.0.31",
-    "mongodb" : "*"
+    "mongodb" : "~2.0"
   }
 }
