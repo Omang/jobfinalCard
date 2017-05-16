@@ -32,5 +32,9 @@
     "socket.io": "^1.7.2",
     "youtube-audio-stream": "0.0.31",
     "mongodb" : "~2.0"
-  }
+  },
+ "engines": {
+"node": ">=0.10.28",
+"npm": ">=1.4.28"
+}
 }
