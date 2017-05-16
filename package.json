@@ -2,7 +2,7 @@
   "name": "jobCard",
   "version": "0.0.1",
   "scripts": {
-    "prestart": "next build",
+    "prestart": "npm install",
     "start": "node server.js"
   },
   "dependencies": {
