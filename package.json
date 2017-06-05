@@ -4,7 +4,7 @@
   "scripts": {
     "prestart": "npm install",
     "start": "node server.js",
-	"postinstall": "bower install"
+	"postinstall": "node node_modules/bower/bin/bower install"
   },
   "dependencies": {
     "angular": "^1.5.8",
