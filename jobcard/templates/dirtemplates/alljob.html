@@ -1,17 +1,20 @@
 <div>
 <div class="card card-inverse" style="background-color: #F5FFFA; border-color: black;">
   <div class="card-block">
-    <h3 class="card-title">{{jobdata.title}}..needed</h3>
-    <p class="card-text">Job duty: {{jobdata.Jdes}} <br>closing date: {{ jobdata.closing}} </p>
-    <h5 class="headman"><a ng-click="addlike()" ng-show="!liked"><span class="glyphicon glyphicon-thumbs-up"></span>like</a>
-                 <a ng-show="liked"><span class="glyphicon glyphicon-ok-sign"></span>you liked</a>
+    <h3 class="card-title">{{vf.jobdata.title}}..needed</h3>
+      <a ng-click="viewmore(vf.jobdata)">
+        view job in full
+      </a>
+    <p class="card-text">Job duty: {{vf.jobdata.Jdes}} <br>closing date: {{ vf.jobdata.closing | date: 'shortDate'}} </p>
+    <h5 class="headman"><a ng-click="addlike()" ng-show="!vf.liked"><span class="glyphicon glyphicon-thumbs-up"></span>like</a>
+                 <a ng-show="vf.liked"><span class="glyphicon glyphicon-ok-sign"></span>you liked</a>
                
             
              <a class="linkx"><span class="glyphicon glyphicon-share"></span>share</a>
             
             
-            <a ng-show="!noresults" class="linkz" ng-click="addstuff()"><span class="glyphicon glyphicon-save-file"></span>add to your job box</a>
-            <a ng-show="noresults" class="linkz" ui-sref="dashboard.applydash" style="color: red;" ><span class="glyphicon glyphicon-floppy-saved"></span>added! check joBox</a></h5>
+            <a ng-show="!vf.noresults" class="linkz" ng-click="addstuff()"><span class="glyphicon glyphicon-save-file"></span>add to your job box</a>
+            <a ng-show="vf.noresults" class="linkz" ui-sref="dashboard.applydash" style="color: red;" ><span class="glyphicon glyphicon-floppy-saved"></span>added! check joBox</a></h5>
   </div>
 </div>
 </div>

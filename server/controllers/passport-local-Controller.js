@@ -12,7 +12,7 @@ module.exports.handlelocal = function(req, res, next){
         if(err){
             res.status(500);
             res.error(err);
-            //console.log(err);
+            console.log(err);
         }
         if(!user){
             res.status(500);

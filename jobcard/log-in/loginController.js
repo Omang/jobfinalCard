@@ -2,23 +2,36 @@
     angular.module("JobCard").service('login',login)
         .controller('loginController', loginController);
     
-    loginController.$inject = ['$scope','$window','$location', '$interpolate' ,'login'];
+    loginController.$inject = ['$scope','$window','$location', '$interpolate' ,'login', '$uibModal'];
     
-     function loginController($scope, $window, $location, $interpolate, login){
-        $scope.loading = false;
+     function loginController($scope, $window, $location, $interpolate, login, $uibModal){
+        //$scope.loading = false;
+        $scope.passForget = function(){
+            $uibModal.open({
+                    templateUrl: 'jobcard/templates/dirtemplates/passforget.html',
+                    controller: function($scope, $uibModalInstance){
+
+                        $scope.closeview = function(event){
+                            $uibModalInstance.close('cancel');
+                        }
+                    }
+                });
+        }
         $scope.logUser = function(){
             var request = {
                 username: $scope.username,
                 password: $scope.password
             }
+            $scope.loading = true;
             login.logIn(request, function(results){
-                console.log(results);
+                $scope.loading = false;
+                console.log(results.data);
                 var token = results.data.msg;
-                $scope.loading = true;
                 if(token == "wrong password" || token == "user not found"){
-                    $scope.ermess = 'wrong details try again';
+                    $scope.loading = false;
+                    $scope.ermess = true;
                 }else{
-                    $scope.loading = true;
+                    $scope.loading = false;
                    var paywox = results.data;
                     $scope.a = paywox;
                     var url = $interpolate('dashboard/{{a}}')($scope);

@@ -1,9 +1,10 @@
 <div>
     <div style="background-color: #F5FFFA; border-color: black;"> 
-        <p class="text-left" ><strong style="color: red;">Firstname:</strong><i>{{cvs.fname}}</i>   <strong style="color: red;">Lastname:</strong><i>{{cvs.lname}}</i>  <strong style="color: red;">Gender:</strong> 
-        <i>{{cvs.gender}}</i><p class="btn-group text-center"> 
-        <button class="btn btn-sm btn-default"  >view more</button>
-        <button class="btn btn-default btn-sm">call for interview</button>
-            <button class="btn btn-default btn-sm" style="padding-right: 2px;">reject cv</button></p>
+        <p class="text-left" ><strong style="color: red;">Firstname:</strong><i>{{iv.realdata.fname}}</i>   <strong style="color: red;">Lastname:</strong><i>{{iv.realdata.lname}}</i>  <strong style="color: red;">Gender:</strong> 
+        <i>{{iv.realdata.gender}}</i><p class="btn-group text-center"> 
+        <button ng-show="!userCalled" class="btn btn-sm btn-default" ng-click="iv.viewItem(iv.realdata)" >view more</button>
+        <button ng-show="!userCalled" class="btn btn-default btn-sm" ng-click="UserCall()">call for interview</button>
+            <button ng-show="!userCalled" class="btn btn-default btn-sm" style="padding-right: 2px;">reject cv</button>
+        <button ng-show="userCalled" class="btn btn-primary btn-sm" style="padding-right: 2px;">called for interview CLOSE</button></p>
     </div><br>
 </div>

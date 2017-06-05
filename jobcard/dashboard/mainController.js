@@ -135,10 +135,13 @@
          function Jobcard(){
          $scope.loadingStatus = true;  
           $scope.alljobs =  mainTask.jobCard(function(result){
-              if(result){
+              if(result.length > 0){
                   $scope.alljobs = result;
                  console.log($scope.alljobs);
-                 $scope.loadingStatus = false; 
+                 $scope.loadingStatus = false;
+                  
+              }else{
+                  $scope.nojobs = true;
               }
               
           });
@@ -211,36 +214,52 @@
         
         
     }
-    allJob.$inject = ['mainTask'];
+    allJob.$inject = ['mainTask', '$uibModal'];
     
-    function allJob(service){
+    function allJob(service, $uibModal){
         return{
           restrict: 'A',
           scope: {
               jobdata: '=',
               userid: '='
           },
+        controller : controller,
+         controllerAs : 'vf',
+         bindToController : true,
             transclude: true,
         replace: true,
         templateUrl: 'jobcard/templates/dirtemplates/alljob.html',
-        link: function(scope, element, attrs){
-            jobBox(scope.jobdata._id, scope.userid);
-            likebox(scope.jobdata._id, scope.userid);
+        link: function(scope, element, attrs, ctrl){
+            var datajob = scope.vf.jobdata;
+            scope.viewmore = function(datajob){
+                scope.vf.viewjob(datajob);
+            }
+            jobBox(scope.vf.jobdata._id, scope.vf.userid);
+            likebox(scope.vf.jobdata._id, scope.vf.userid);
             function jobBox (jobid, userid){
-                var request = {
-                    userid: jobid
+                console.log("my user_id is:" + userid);
+                var requestone = {
+                    userid: jobid,
+                    myId: userid
                 };
-                scope.$watch(request, function(){
+                scope.$watch(function(){
+                   return requestone; 
+                }, function(requestone){
+                    var request ={
+                        userid : requestone.userid
+                    }
+                    var userid = requestone.myId;
                    service.joBox(request, function(results){
-                    //console.log(results.data.cardviews);
+                    console.log(results.data.cardviews);
                     if(results.data !== undefined){
                         var jobview = results.data.cardviews;
                         for(var i=0; i<jobview.length; i++){
-                            if(jobview[i].cardview == userid){
-                                console.log(jobview);
-                                 scope.noresults = true;
+                            
+                            if( jobview[i].cardview === userid){
+                                console.log(jobview[i].cardview);
+                                 scope.vf.noresults = true;
                             }else{
-                              scope.noresults = false;  
+                              scope.vf.noresults = false;  
                             }
                     }
                         
@@ -264,13 +283,13 @@
                         if(likesv !== undefined){
                             for(var i = 0; i< likesv.length; i++){
                                 if(likesv[i].likes == userid){
-                                    scope.liked = true;
+                                    scope.vf.liked = true;
                                 }else{
-                                    scope.liked = false;
+                                    scope.vf.liked = false;
                                 }
                             }
                         }else{
-                            scope.liked = false;
+                            scope.vf.liked = false;
                         }
                     }
                 });
@@ -322,6 +341,27 @@
         }
     }
         };
+    controller.$inject = ['$scope', '$uibModal'];  
+        function controller($scope, $uibModal){
+            var vf = this;
+            vf.viewjob = function(jobdata){
+                console.log("view more just been clicked");
+               // vd.cvman = cvowner;
+                $uibModal.open({
+                    templateUrl: 'jobcard/templates/dirtemplates/viewjob.html',
+                    controller: function($scope, $uibModalInstance){
+                        $scope.title = jobdata.title;
+                        $scope.qulification = jobdata.qulification;
+                        $scope.education = jobdata.education;
+                        $scope.Jdes = jobdata.Jdes;
+                        $scope.district =  jobdata.district;
+                        $scope.closeview = function(event){
+                            $uibModalInstance.close('cancel');
+                        }
+                    }
+                });
+            }
+        }
     }
     
 }())

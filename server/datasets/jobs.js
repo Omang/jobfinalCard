@@ -23,10 +23,11 @@ module.exports = mongoose.model('Jobs', {
         proffesion: String,
         skill : String,
         experince: String,
+        interview: String,
         review: [{
             reviewone: String,
             jobid: String
         }],
-        interview: String
+        
     }]
 });

@@ -1,62 +1,12 @@
 (function(){
-    angular.module("JobCard").service('dashboard', ['$http','Upload', function($http, Upload){
-        this.profile = function(request, callback){
-         Upload.upload({
-             method: 'POST',
-             url: 'secure-api/edit/profile',
-             data: {
-                 userid: request.userid,
-                 bio: request.bio,
-                 token: request.payload
-             },
-             file: request.file
-         }).progress(function(evt){
-             console.log("we are updating");
-         }).then(function(response){
-             return callback(response);
-         }).catch(function(error){
-             return callback(error);
-         });
-        }
-        this.getprofile = function(request, callback){
-            $http.post('api/get/profile', request).then(function(response){
-                return callback(response);
-            }).catch(function(error){
-                return callback(error);
-            });
-        }
-        this.createCv = function(request, callback){
-            $http.post('api/create/cv', request).then(function(response){
-                return callback(response);
-            }).catch(function(error){
-                return callback(error);
-            });
-        }
-        this.cvCheck = function(request, callback){
-            $http.post('api/check/cv', request).then(function(response){
-                return callback(response);
-            }).catch(function(error){
-                return callback(error);
-            });
-        }
-        this.createJob = function(request, callback){
-            $http.post('api/create/job', request).then(function(response){
-                return callback(response);
-            }).catch(function(error){
-                return callback(error);
-            });
-        }
-        this.checkJob = function(requestjob, callback){
-            $http.post('api/check/job', requestjob).then(function(response){
-                return callback(response.data);
-            }).catch(function(error){
-                return callback(error);
-            })
-        }
-        
-    }]).controller('dashboard', ['$scope','$location','$interpolate','$stateParams','dashboard','$state',  function($scope, $location,$interpolate, $stateParams, dashboard, $state){
+    angular.module("JobCard").service('dashboard',dashboard).controller('dashboard',dashman);
+    
+    dashman.$inject = ['$scope','$location','$interpolate','$stateParams','dashboard','$state'];  
+        function dashman($scope, $location,$interpolate, $stateParams, dashboard, $state){
         $scope.loggedIn = true;
         if(localStorage['User-Data'] !== undefined){
+            $scope.isNavCollapsed = true;
+            $scope.isCollapsed = false;
             $scope.testing = false;
          var con = '';
         var payload = $stateParams.a;
@@ -100,6 +50,7 @@
                          
                  }else{
                      $scope.cards = false;
+                     $scope.mystuff = true;
                  }
              });
          }
@@ -159,10 +110,11 @@
             console.log(request);
             dashboard.profile(request, function(results){
                 if(results.data !== undefined){
-                    
+                   
                 console.log(results.data);
                     $location.path('/dashboard');
-                   $state.reload();
+                    $state.reload();
+                    //$scope.profiledited = true;
                 }
             });
             
@@ -229,5 +181,65 @@
         }else{
             $location.path('/');
         }
-    }]);
+    }
+    
+     dashboard.$inject = ['$http','Upload'];
+     function dashboard($http, Upload){
+        this.profile = function(request, callback){
+         Upload.upload({
+             method: 'POST',
+             url: 'secure-api/edit/profile',
+             data: {
+                 userid: request.userid,
+                 bio: request.bio,
+                 token: request.payload
+             },
+             file: request.file
+         }).progress(function(evt){
+             console.log("we are updating");
+         }).then(function(response){
+             return callback(response);
+         }).catch(function(error){
+             return callback(error);
+         });
+        }
+        this.getprofile = function(request, callback){
+            $http.post('api/get/profile', request).then(function(response){
+                return callback(response);
+            }).catch(function(error){
+                return callback(error);
+            });
+        }
+        this.createCv = function(request, callback){
+            $http.post('api/create/cv', request).then(function(response){
+                return callback(response);
+            }).catch(function(error){
+                return callback(error);
+            });
+        }
+        this.cvCheck = function(request, callback){
+            $http.post('api/check/cv', request).then(function(response){
+                return callback(response);
+            }).catch(function(error){
+                return callback(error);
+            });
+        }
+        this.createJob = function(request, callback){
+            $http.post('api/create/job', request).then(function(response){
+                return callback(response);
+            }).catch(function(error){
+                return callback(error);
+            });
+        }
+        this.checkJob = function(requestjob, callback){
+            $http.post('api/check/job', requestjob).then(function(response){
+                return callback(response.data);
+            }).catch(function(error){
+                return callback(error);
+            })
+        }
+        
+    }
+    
+    
 }())

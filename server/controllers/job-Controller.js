@@ -150,7 +150,7 @@ module.exports.getJob = function(req, res){
 }
 module.exports.cvReview = function(req, res){
     var user = req.body.cvdata;
-    var jobid = req.body.job_id;
+    var jobid = req.body.jobid;
     Users.findById(user, function(err, userdata){
         if(err){
             res.error(err).status(500);
@@ -198,7 +198,36 @@ module.exports.reviewCheck = function(req, res){
        if(err){
            res.error(err).status(500);
        }else{
-           res.json(jobcard);
+           res.json(jobcard).status(200);
        }
+    });
+}
+module.exports.SaveCall = function(req, res){
+    var job_id = req.body.jobid;
+    var cvid = req.body.cvid;
+    Jobs.findById(job_id, function(err, jobcard){
+        if(err){
+            res.error(err).status(401);
+        }else{
+            var searchcard = jobcard.cvbox;
+            //console.log(searchcard);
+            for(var i = 0; i < searchcard.length; i++){
+                var ids = searchcard[i]._id;
+                console.log(ids);
+                console.log("cvid"+cvid);
+                if(ids == cvid){
+                    var items = searchcard[i].fname
+                    
+                    searchcard[i].interview = "ok";
+                    jobcard.save(function(err, item){
+                        if(err){
+                            res.error(err).status(401);
+                        }else{
+                          res.json({msg: 'ok'}).status(200);  
+                        }
+                    });
+                }
+            }
+        }
     });
 }

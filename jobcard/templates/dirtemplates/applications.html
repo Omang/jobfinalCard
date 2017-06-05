@@ -9,9 +9,9 @@
         view the whole resume
       </a>
     </span><br>
-        <button ng-if="!vd.savedcv" class="btn btn-sm btn-warning" ng-click="deletecv()">reject cv</button>
-                <button id="lateR" ng-show="!vd.savedcv" class="btn btn-sm btn-warning" ng-click="cvSave()">save for late review</button>
-                <button ng-if="vd.savedcv" class="btn btn-sm btn-success" ng-click="cvClose()">added for late review.. CLOSE</button>
+        <button ng-show="!vd.savedcv" class="btn btn-sm btn-warning" ng-click="deletecv()">reject cv</button>
+                <button  ng-show="!vd.savedcv" class="btn btn-sm btn-warning" ng-click="cvSaved()">save for late review</button>
+                <button ng-show="vd.savedcv" class="btn btn-sm btn-success" ng-click="cvClose()">added for late review.. CLOSE</button>
       </p>
         </div>
     </div>

@@ -5,9 +5,13 @@
             <h4 class="text-center"><strong>log in</strong></h4>
         </thead>
         <tr>
-            <td><input class="form-control" required type="text" ng-model="username" placeholder="username" />
+            <td><span class="alert alert-danger form-control" ng-show="ermess">wrong details... try again
+                </span>
+                <input class="form-control" required type="text" ng-model="username" placeholder="username" />
                 <span class="alert alert-warning form-control" ng-show="log.username.$dirty && log.username.$error.required">username is needed
            </span>
+                
+                
             </td>
         </tr>
         <tr>
@@ -33,11 +37,11 @@
         </tr>
         <tr>
             <td><strong><a ui-sref="register">create an account</a></strong>
-                <i style="font-color: red;"><a ui-sref="register">forgot password?</a></i>
+                <i style="font-color: red;"><a ng-click="passForget()">forgot password?</a></i>
                 <div ng-show="ermess" class="alert alert-danger form-control">wrong details</div>
             </td>
         </tr>
     </table>
     </form>
-    <spinner name="mySpinner" show="loading"></spinner>
+    <div ng-show="loading"><h6>loading....</h6></div>
 </div>

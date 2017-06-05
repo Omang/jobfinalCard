@@ -18,10 +18,11 @@
     
     <div class="col-md-8 col-sm-12">
        <h3 class="text-center">Card Stats</h3>
-       <div style="padding-left: 5px;">
+       <div ng-show="!mystuff" style="padding-left: 5px;">
       <canvas id="doughnut" class="chart chart-doughnut" chart-data="data" chart-labels="labels">
        </canvas>
            </div>
+        <div ng-show="mystuff"><h4>no results at the moment..</h4><p>working on reaching clients</p></div>
     </div>
 </div>
 
